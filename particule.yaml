@@ -1,0 +1,58 @@
+esphome:
+  name: particule
+  platform: ESP8266
+  board: esp01_1m
+
+# Enable logging
+logger:
+    esp8266_store_log_strings_in_flash: false
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Pm25 Fallback Hotspot"
+    password: !secret ap_password
+
+captive_portal:
+
+
+uart:
+  rx_pin: GPIO2
+  baud_rate: 9600
+
+sensor:
+  - platform: pmsx003
+    type: PMSX003
+    pm_1_0:
+      name: "Particulate Matter <1.0µm Concentration"
+      filters:
+        - throttle: 5s
+        - debounce: 1s
+        - sliding_window_moving_average:
+            window_size: 15
+            send_every: 15
+    pm_2_5:
+      name: "Particulate Matter <2.5µm Concentration"
+      filters:
+        - throttle: 5s
+        - debounce: 1s
+        - sliding_window_moving_average:
+            window_size: 15
+            send_every: 15
+    pm_10_0:
+      name: "Particulate Matter <10.0µm Concentration"
+      filters:
+        - throttle: 5s
+        - debounce: 1s
+        - sliding_window_moving_average:
+            window_size: 15
+            send_every: 15
